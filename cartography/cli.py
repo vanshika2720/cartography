@@ -1046,6 +1046,11 @@ class CLI:
         else:
             logging.getLogger("cartography").setLevel(logging.INFO)
         logger.debug("Launching cartography with CLI configuration: %r", vars(config))
+        if not config.neo4j_user:
+            config.neo4j_user = os.environ.get("NEO4J_USER")
+        if config.neo4j_uri == "bolt://localhost:7687" and os.environ.get("NEO4J_URI"):
+            config.neo4j_uri = os.environ.get("NEO4J_URI")
+
         # Neo4j config
         if config.neo4j_user:
             config.neo4j_password = None
@@ -1062,6 +1067,8 @@ class CLI:
                     config.neo4j_password_env_var,
                 )
                 config.neo4j_password = os.environ.get(config.neo4j_password_env_var)
+            elif os.environ.get("NEO4J_PASSWORD"):
+                config.neo4j_password = os.environ.get("NEO4J_PASSWORD")
             if not config.neo4j_password:
                 logger.warning(
                     "Neo4j username was provided but a password could not be found.",
