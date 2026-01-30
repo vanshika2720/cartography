@@ -9,6 +9,7 @@ from typing import List
 from typing import Tuple
 from typing import Union
 
+import neo4j
 import neo4j.exceptions
 from neo4j import GraphDatabase
 from statsd import StatsClient
@@ -253,7 +254,7 @@ def run_with_config(sync: Sync, config: Union[Config, argparse.Namespace]) -> in
 
     neo4j_auth = None
     if config.neo4j_user or config.neo4j_password:
-        neo4j_auth = (config.neo4j_user, config.neo4j_password)
+        neo4j_auth = neo4j.basic_auth(config.neo4j_user, config.neo4j_password)
     try:
         neo4j_driver = GraphDatabase.driver(
             config.neo4j_uri,

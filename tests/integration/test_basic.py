@@ -5,7 +5,10 @@ from tests.integration import settings
 
 
 def test_neo4j_connection():
-    driver = neo4j.GraphDatabase.driver(settings.get("NEO4J_URL"))
+    driver = neo4j.GraphDatabase.driver(
+        settings.get("NEO4J_URL"),
+        auth=neo4j.basic_auth(settings.get("NEO4J_USER"), settings.get("NEO4J_PASSWORD")),
+    )
     with driver.session() as session:
         session.run("SHOW INDEXES;")
 
